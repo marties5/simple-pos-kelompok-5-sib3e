@@ -1,25 +1,22 @@
-@extends('layouts.app') 
+@extends('layouts.app')
 
-@section('title', 'Kasir') 
+@section('title', 'Kasir')
 
-@section('content') 
+@section('content')
 
-    <h1 class="text-lg font-semibold mb-4">Transaksi Kasir</h1> 
+    <h1 class="text-lg font-semibold mb-4">Transaksi Kasir</h1>
 
     <div x-data="{ 
         cart: [], 
         selectedProduct: null,
         addToCart(id, name, price) { 
-
             this.cart.push({ id, name, price }); 
             this.selectedProduct = id;
         }, 
         removeFromCart(id) { 
-
             this.cart = this.cart.filter(item => item.id !== id); 
         }, 
         subtotal() { 
-
             return this.cart.reduce((sum, item) => sum + item.price, 0); 
         } 
     }"> 
@@ -52,7 +49,11 @@
 
             @endforeach 
 
-        </div> 
+        </div>
+
+        <div class="mt-4">
+            {{ $products->links() }}
+        </div>
 
         <div class="mt-4 border-t pt-3"> 
 
@@ -71,7 +72,7 @@
 
                     </button>
 
-                </div>
+                </div> 
 
             </template> 
 
