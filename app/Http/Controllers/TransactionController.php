@@ -9,7 +9,7 @@ class TransactionController extends Controller
 {
     public function create()
     {
-        $products = Product::take(12)->get();
+        $products = Product::paginate(12);
 
         return view('pos.create', ['products' => $products]);
     }
@@ -21,11 +21,11 @@ class TransactionController extends Controller
 
     public function index()
     {
-    $transactions = Transaction::with('details.product')
-        ->latest()
-        ->paginate(15);
+        $transactions = Transaction::with('details.product')
+            ->latest()
+            ->paginate(15);
 
-    return view('transactions.index', compact('transactions'));
+        return view('transactions.index', compact('transactions'));
     }
 
     public function show(string $id)
