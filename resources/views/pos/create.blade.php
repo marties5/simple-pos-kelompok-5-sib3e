@@ -2,70 +2,112 @@
 
 @section('title', 'Kasir')
 
-@section('content')
-    <h1 class="text-lg font-semibold mb-4">Transaksi Kasir</h1>
+@section('content') <h1 class="text-lg font-semibold mb-4">Transaksi Kasir</h1>
 
-    @if (session('success'))
-        <div class="bg-green-50 text-green-700 p-3 rounded-md mb-4">
-            {{ session('success') }}
+@if (session('success'))
+    <div class="bg-green-50 text-green-700 p-3 rounded-md mb-4">
+        {{ session('success') }}
+    </div>
+@endif
+
+    @if ($errors->any())
+        <div class="bg-red-50 text-red-700 p-3 rounded-md mb-4">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
     @endif
 
-    @error('items')
-        <div class="bg-red-50 text-red-700 p-3 rounded-md mb-4">{{ $message }}</div>
-    @enderror
+<form method="POST" action="{{ route('transactions.store') }}"
+    x-data="{
+        cart: [],
 
-    <form method="POST" action="{{ route('transactions.store') }}"
-        x-data="{
-            cart: [],
-            addToCart(id, name, price) {
-                const existingItem = this.cart.find(item => item.id === id);
+        addToCart(id, name, price) {
+            const existingItem = this.cart.find(item => item.id === id);
 
-                if (existingItem) {
-                    existingItem.qty++;
-                } else {
-                    this.cart.push({ id, name, price, qty: 1 });
-                }
-            },
-            subtotal() {
-                return this.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            if (existingItem) {
+                existingItem.qty++;
+            } else {
+                this.cart.push({
+                    id: id,
+                    name: name,
+                    price: price,
+                    qty: 1
+                });
             }
-        }">
-        @csrf
+        },
 
-        <div class="grid grid-cols-3 gap-4">
-            @foreach ($products as $product)
-                <div class="border rounded-md p-3 cursor-pointer"
-                    @click="addToCart({{ $product->id }}, '{{ $product->name }}', {{ $product->price }})">
-                    <p class="font-medium">{{ $product->name }}</p>
-                    <p class="text-sm text-slate-500">Rp {{ number_format($product->price) }}</p>
-                </div>
-            @endforeach
-        </div>
+        subtotal() {
+            return this.cart.reduce(
+                (sum, item) => sum + (item.price * item.qty),
+                0
+            );
+        }
+    }">
 
-        <div class="mt-4 border-t pt-3">
-            <template x-for="(item, index) in cart" :key="item.id">
-                <div>
-                    <p x-text="item.name + ' - Rp ' + item.price + ' x ' + item.qty"></p>
+    @csrf
 
-                    <input type="hidden"
-                        :name="'items[' + index + '][product_id]'"
-                        :value="item.id">
+    <div class="grid grid-cols-3 gap-4">
+        @foreach ($products as $product)
+            <div
+                class="border rounded-md p-3 cursor-pointer"
+                @click="addToCart(
+                    {{ $product->id }},
+                    '{{ $product->name }}',
+                    {{ $product->price }}
+                )"
+            >
+                <p class="font-medium">
+                    {{ $product->name }}
+                </p>
 
-                    <input type="hidden"
-                        :name="'items[' + index + '][qty]'"
-                        :value="item.qty">
-                </div>
-            </template>
+                <p class="text-sm text-slate-500">
+                    Rp {{ number_format($product->price) }}
+                </p>
+            </div>
+        @endforeach
+    </div>
 
-            <p class="font-semibold mt-2">
-                Subtotal: Rp <span x-text="subtotal()"></span>
-            </p>
+    <div class="mt-4 border-t pt-3">
 
-            <button type="submit"
-                class="mt-3 bg-blue-600 text-white px-4 py-2 rounded-md">
-                Bayar
-            </button>
-        </div>
-    </form>
+        <template x-for="(item, index) in cart" :key="item.id">
+            <div class="mb-2">
+                <p x-text="
+                    item.name +
+                    ' - Rp ' +
+                    item.price +
+                    ' x ' +
+                    item.qty
+                "></p>
+
+                <input
+                    type="hidden"
+                    :name="'items[' + index + '][product_id]'"
+                    :value="item.id"
+                >
+
+                <input
+                    type="hidden"
+                    :name="'items[' + index + '][qty]'"
+                    :value="item.qty"
+                >
+            </div>
+        </template>
+
+        <p class="font-semibold mt-2">
+            Subtotal:
+            Rp <span x-text="subtotal()"></span>
+        </p>
+
+        <button
+            type="submit"
+            class="mt-3 bg-blue-600 text-white px-4 py-2 rounded-md"
+        >
+            Bayar
+        </button>
+
+    </div>
+</form>
 @endsection

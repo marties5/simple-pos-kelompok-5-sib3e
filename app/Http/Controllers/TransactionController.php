@@ -21,9 +21,22 @@ class TransactionController extends Controller
     {
         $validated = $request->validated();
 
+        foreach ($validated['items'] as $index => $item) {
+            $product = Product::findOrFail($item['product_id']);
+
+            if ($item['qty'] > $product->stock) {
+                return redirect()
+                    ->route('pos.create')
+                    ->withErrors([
+                        "items.$index.qty" =>
+                            "Stok produk {$product->name} tidak mencukupi. Stok tersedia: {$product->stock}."
+                    ]);
+            }
+        }
+
         DB::transaction(function () use ($validated) {
             $transaction = Transaction::create([
-                'user_id' => 1, // sementara di-hardcode, belum ada login sungguhan sampai Pertemuan 7
+                'user_id' => 1,
                 'total' => 0,
             ]);
 
@@ -31,6 +44,7 @@ class TransactionController extends Controller
 
             foreach ($validated['items'] as $item) {
                 $product = Product::findOrFail($item['product_id']);
+
                 $subtotal = $product->price * $item['qty'];
                 $total += $subtotal;
 
@@ -42,10 +56,14 @@ class TransactionController extends Controller
                 ]);
             }
 
-            $transaction->update(['total' => $total]);
+            $transaction->update([
+                'total' => $total,
+            ]);
         });
 
-        return redirect()->route('pos.create')->with('success', 'Transaksi berhasil disimpan.');
+        return redirect()
+            ->route('pos.create')
+            ->with('success', 'Transaksi berhasil disimpan.');
     }
 
     public function index()
