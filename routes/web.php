@@ -19,7 +19,6 @@ Route::post('/logout', [LoginController::class, 'destroy'])
     ->name('logout');
 
 Route::middleware('auth')->group(function () {
-
     // Kasir POS
     Route::get('/pos', [TransactionController::class, 'create'])->name('pos.create');
     Route::post('/pos', [TransactionController::class, 'store'])->name('transactions.store');
