@@ -59,6 +59,59 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
 
-## anjay
+---
 
-update layout aplikasi
+## Jawaban Langkah 11 no. 4 pada Jobsheet 7
+## Skenario Pengujian Manual Berdasarkan Role
+
+### 1. Pengujian Role Admin
+
+**Tujuan:** Memastikan admin dapat mengakses halaman yang dikhususkan untuk admin dan halaman transaksi.
+
+**Langkah Pengujian:**
+1. Jalankan aplikasi Simple POS.
+2. Buka halaman login melalui `/login`.
+3. Login menggunakan email `admin@pos.test` dan password `password`.
+4. Buka halaman `/products`.
+5. Buka halaman `/categories`.
+6. Buka halaman `/transactions`.
+
+**Hasil yang Diharapkan:**
+- Admin berhasil login.
+- Halaman Produk dapat dibuka.
+- Halaman Kategori dapat dibuka.
+- Halaman Transaksi dapat dibuka.
+- Menu Produk dan Kategori tampil pada navigasi.
+
+### 2. Pengujian Role Kasir
+
+**Tujuan:** Memastikan kasir hanya dapat mengakses fitur sesuai hak aksesnya dan tidak dapat membuka halaman khusus admin.
+
+**Langkah Pengujian:**
+1. Login menggunakan email `kasir@pos.test` dan password `password`.
+2. Buka halaman `/pos`.
+3. Buka halaman `/transactions`.
+4. Coba buka halaman `/products` secara langsung melalui address bar.
+5. Coba buka halaman `/categories` secara langsung melalui address bar.
+
+**Hasil yang Diharapkan:**
+- Kasir berhasil login.
+- Halaman Kasir dan Transaksi dapat dibuka.
+- Halaman Produk dan Kategori menampilkan respons 403 Forbidden.
+- Menu Produk dan Kategori tidak tampil pada navigasi kasir.
+
+### 3. Pengujian Role Manager
+
+**Tujuan:** Memastikan manager dapat mengakses halaman Transaksi, tetapi tidak dapat mengakses halaman khusus admin.
+
+**Langkah Pengujian:**
+1. Login menggunakan akun yang memiliki role `manager`.
+2. Buka halaman `/transactions`.
+3. Coba buka halaman `/products` secara langsung melalui address bar.
+4. Coba buka halaman `/categories` secara langsung melalui address bar.
+
+**Hasil yang Diharapkan:**
+- Manager berhasil login.
+- Halaman Transaksi dapat dibuka.
+- Halaman Produk dan Kategori tidak dapat dibuka dan menampilkan respons 403 Forbidden.
+- Hak akses manager tidak sama dengan admin.
