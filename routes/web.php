@@ -9,7 +9,15 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
+// Jika akses root '/' dicek, arahkan berdasarkan status login atau ke halaman info
+Route::get('/', function () {
+    return auth()->check() ? redirect()->route('pos.create') : redirect()->route('info');
+});
+
 Route::middleware('guest')->group(function () {
+    // Halaman informasi khusus tamu
+    Route::get('/info', [App\Http\Controllers\InfoController::class, 'index'])->name('info');
+    
     Route::get('/login', [LoginController::class, 'create'])->name('login');
     Route::post('/login', [LoginController::class, 'store']);
 });
