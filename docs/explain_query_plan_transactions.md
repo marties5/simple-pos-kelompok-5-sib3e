@@ -78,3 +78,16 @@ array:1 [
 
 1. Index `transactions_user_id_index` terbukti aktif dan dimanfaatkan secara optimal oleh SQLite engine saat query melibatkan kondisi `user_id`.
 2. Jika aplikasi sering melakukan pencarian/laporan transaksi berdasarkan rentang tanggal (`created_at`), disarankan untuk menambahkan index pada kolom `created_at` atau komposit index `(user_id, created_at)`.
+
+# Pengukuran Memori: get() vs lazyById()
+
+Dataset: 52.500 row pada tabel `transactions`.
+
+| Cara baca data | Peak memory (MB) |
+|---|---:|
+| `Transaction::lazyById()` | 70.2 |
+| `Transaction::get()` | 128.5 |
+
+Kesimpulan kelompok:
+
+Berdasarkan hasil pengukuran, `lazyById()` menggunakan peak memory sebesar 70,2 MB, sedangkan `get()` menggunakan 128,5 MB. Dengan demikian, `lazyById()` lebih hemat memori sebesar 58,3 MB untuk membaca 52.500 transaksi. Hal ini karena `lazyById()` membaca data secara bertahap, sedangkan `get()` mengambil seluruh data sekaligus.
