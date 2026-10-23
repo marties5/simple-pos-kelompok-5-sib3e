@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('title', 'Laporan Penjualan')
@@ -33,6 +32,11 @@
         <a href="{{ route('reports.export.xlsx', ['from' => $from, 'to' => $to]) }}"
             class="bg-green-600 text-white px-4 py-2 rounded-md text-sm">
             Export Excel
+        </a>
+
+        <a href="{{ route('reports.export.pdf', ['from' => $from, 'to' => $to]) }}"
+            class="bg-red-600 text-white px-4 py-2 rounded-md text-sm">
+            Export PDF
         </a>
     </form>
 
