@@ -12,7 +12,7 @@ Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
 // Jika akses root '/', arahkan berdasarkan status login atau ke halaman info
 Route::get('/', function () {
-    return auth()->check()
+    return \Illuminate\Support\Facades\Auth::check()
         ? redirect()->route('pos.create')
         : redirect()->route('info');
 });
@@ -65,5 +65,9 @@ Route::middleware('auth')->group(function () {
         // Export laporan ke Excel
         Route::get('/reports/export/xlsx', [ReportController::class, 'exportExcel'])
             ->name('reports.export.xlsx');
+
+        // Export laporan ke PDF
+        Route::get('/reports/export/pdf', [ReportController::class, 'exportPdf'])
+            ->name('reports.export.pdf');
     });
 });
