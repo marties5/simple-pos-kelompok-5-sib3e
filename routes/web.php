@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,7 +18,7 @@ Route::get('/', function () {
 Route::middleware('guest')->group(function () {
     // Halaman informasi khusus tamu
     Route::get('/info', [App\Http\Controllers\InfoController::class, 'index'])->name('info');
-    
+
     Route::get('/login', [LoginController::class, 'create'])->name('login');
     Route::post('/login', [LoginController::class, 'store']);
 });
@@ -37,5 +38,9 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:admin')->group(function () {
         Route::resource('categories', CategoryController::class)->except('show');
         Route::resource('products', ProductController::class)->except(['show', 'destroy']);
+
+        // Laporan penjualan
+        Route::get('/reports', [ReportController::class, 'index'])
+            ->name('reports.index');
     });
 });
