@@ -54,6 +54,12 @@ Route::middleware('auth')->group(function () {
         Route::resource('products', ProductController::class)
             ->except(['show', 'destroy']);
 
+        Route::get('/import', [ReportController::class, 'importForm'])
+            ->name('import.create');
+
+        Route::post('/import', [ReportController::class, 'import'])
+            ->name('import.store');
+
         // Laporan penjualan
         Route::get('/reports', [ReportController::class, 'index'])
             ->name('reports.index');
