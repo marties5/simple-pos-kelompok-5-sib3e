@@ -115,3 +115,24 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 - Halaman Transaksi dapat dibuka.
 - Halaman Produk dan Kategori tidak dapat dibuka dan menampilkan respons 403 Forbidden.
 - Hak akses manager tidak sama dengan admin.
+
+## Jawaban Langkah 10 no. 5 pada Jobsheet 9
+## Identifikasi Proses yang Layak Dipindahkan ke Queued Job
+
+### Pengiriman Struk Transaksi melalui Email
+
+Salah satu proses pada aplikasi Simple POS yang layak dipindahkan ke queued job adalah pengiriman struk transaksi melalui email setelah proses checkout selesai.
+
+Pada proses checkout, sistem perlu menyimpan data transaksi dan detail produk yang dibeli ke dalam database. Apabila pengiriman struk melalui email dilakukan secara langsung, kasir harus menunggu sampai proses pengiriman selesai. Hal ini dapat memperlambat proses checkout, terutama ketika layanan email atau koneksi jaringan sedang mengalami gangguan.
+
+Dengan menggunakan queued job, pengiriman struk dapat dijalankan di background setelah transaksi berhasil disimpan. Sistem cukup memasukkan pekerjaan pengiriman email ke dalam queue sehingga kasir tidak perlu menunggu proses tersebut selesai untuk melanjutkan transaksi berikutnya.
+
+**Alasan penggunaan queued job:**
+1. Mengurangi waktu tunggu kasir ketika menyelesaikan transaksi.
+2. Memisahkan proses checkout dengan proses pengiriman email.
+3. Memungkinkan pengiriman email dicoba kembali apabila terjadi kegagalan.
+4. Membantu menjaga respons aplikasi tetap cepat ketika terdapat banyak transaksi.
+
+**Kesimpulan:**
+
+Pengiriman struk transaksi melalui email lebih tepat dijalankan menggunakan queued job karena proses tersebut tidak harus selesai secara langsung ketika kasir melakukan checkout. Dengan demikian, proses utama transaksi tetap dapat berjalan tanpa harus menunggu proses pengiriman email di background.
