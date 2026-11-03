@@ -6,6 +6,7 @@ use App\Exports\SalesReportExport;
 use App\Models\ImportError;
 use App\Models\Product;
 use App\Models\Transaction;
+use App\Models\TransactionDetail;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -70,6 +71,7 @@ class ReportController extends Controller
             'totalPenjualan'  => $this->filteredQuery($from, $to)->sum('total'),
             'jumlahTransaksi' => $this->filteredQuery($from, $to)->count(),
             'transactions'    => $this->filteredQuery($from, $to)->latest()->limit(50)->get(),
+            'bestSellers'     => $this->bestSellingProducts($from, $to),
             'from'            => $from->toDateString(),
             'to'              => $to->toDateString(),
         ]);
@@ -177,5 +179,19 @@ class ReportController extends Controller
         }
 
         return $query;
+    }
+
+    private function bestSellingProducts($from, $to)
+    {
+        return TransactionDetail::query()
+            ->join('transactions', 'transactions.id', '=', 'transaction_details.transaction_id')
+            ->join('products', 'products.id', '=', 'transaction_details.product_id')
+            ->whereBetween('transactions.created_at', [$from, $to])
+            ->select('products.name as product_name')
+            ->selectRaw('SUM(transaction_details.qty) as total_qty')
+            ->groupBy('transaction_details.product_id', 'products.name')
+            ->orderByDesc('total_qty')
+            ->limit(10)
+            ->get();
     }
 }
