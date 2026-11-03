@@ -6,5 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class ImportError extends Model
 {
-    protected $guarded = ['id'];
+    protected $fillable = [
+        'filename',
+        'row_number',
+        'row_data',
+        'error_message',
+    ];
 }
